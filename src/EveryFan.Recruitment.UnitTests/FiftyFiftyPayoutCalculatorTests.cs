@@ -111,6 +111,44 @@ namespace EveryFan.Recruitment.UnitTests
         }
 
         [Test]
+        public void SplitWinnings_TiedLastEntries()
+        {
+            Tournament tournament = new Tournament()
+            {
+                BuyIn = 250,
+                PrizePool = 750,
+                PayoutScheme = PayoutScheme.FIFTY_FIFY,
+                Entries = new List<TournamentEntry>()
+                {
+                    new TournamentEntry()
+                    {
+                        Chips = 5000,
+                        UserId = "roger"
+                    },
+                    new TournamentEntry()
+                    {
+                        Chips = 3000,
+                        UserId = "jennifer"
+                    },
+                    new TournamentEntry()
+                    {
+                        Chips = 3000,
+                        UserId = "billy"
+                    },
+                }
+            };
+
+            PayoutEngine calculator = new PayoutEngine();
+            IReadOnlyList<TournamentPayout> payouts = calculator.Calculate(tournament);
+
+            Assert.AreEqual(3, payouts.Count);
+            Assert.AreEqual(750, payouts.Sum(p => p.Payout));
+            Assert.AreEqual(500, payouts[0].Payout);
+            Assert.AreEqual(125, payouts[1].Payout);
+            Assert.AreEqual(125, payouts[2].Payout);
+        }
+
+        [Test]
         public void OddSplitWinnings()
         {
             Tournament tournament = new Tournament()
