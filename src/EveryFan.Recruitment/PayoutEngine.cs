@@ -8,27 +8,7 @@ namespace EveryFan.Recruitment
     {
         public IReadOnlyList<TournamentPayout> Calculate(Tournament tournament)
         {
-            IPayoutCalculator calculator;
-
-            switch (tournament.PayoutScheme)
-            {
-                case PayoutScheme.FIFTY_FIFY:
-                {
-                    calculator = new FiftyFiftyPayoutCalculator();
-                    break;
-                }
-
-                case PayoutScheme.WINNER_TAKES_ALL:
-                {
-                    calculator = new WinnerTakesAllPayoutCalculator();
-                    break;
-                }
-
-                default:
-                {
-                    throw new ArgumentOutOfRangeException(nameof(tournament.PayoutScheme));
-                }
-            }
+            IPayoutCalculator calculator = PayoutCalculatorFactory.CreatePayoutCalculator(tournament.PayoutScheme);
 
             return calculator.Calculate(tournament);
         }
